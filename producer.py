@@ -1,5 +1,5 @@
 from kafka import KafkaProducer
-
+import time
 
 def main():
     bootstrap_servers = ['wn01.itversity.com:6667', 'wn02.itversity.com:6667']
@@ -7,13 +7,13 @@ def main():
 
     producer = KafkaProducer(bootstrap_servers=bootstrap_servers)
 
-    ack = producer.send(topicName, b'Hello World!!!!!!!!')
+    with open('json_data.txt', 'rb') as reader:
+        for message in reader.readlines():
+            time.sleep(3)
+            ack = producer.send(topicName, message)
 
     metadata = ack.get()
-    print(metadata.topic)
-    print(metadata.partition)
-    print("python main function")
-
+    print(metadata.topic+"-"+str(metadata.partition))
 
 if __name__ == '__main__':
     main()
